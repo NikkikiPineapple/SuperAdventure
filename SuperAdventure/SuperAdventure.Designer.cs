@@ -53,6 +53,9 @@
             lblStone = new Label();
             buyBoneSword = new Button();
             craftFireSword = new Button();
+            craftLeatherHelmet = new Button();
+            cboRecipes = new ComboBox();
+            btnCraftItem = new Button();
             ((System.ComponentModel.ISupportInitialize)dgvInventory).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgvQuests).BeginInit();
             SuspendLayout();
@@ -137,7 +140,7 @@
             // cboWeapons
             // 
             cboWeapons.FormattingEnabled = true;
-            cboWeapons.Location = new Point(369, 559);
+            cboWeapons.Location = new Point(493, 559);
             cboWeapons.Name = "cboWeapons";
             cboWeapons.Size = new Size(121, 23);
             cboWeapons.TabIndex = 10;
@@ -145,7 +148,7 @@
             // cboPotions
             // 
             cboPotions.FormattingEnabled = true;
-            cboPotions.Location = new Point(369, 593);
+            cboPotions.Location = new Point(493, 588);
             cboPotions.Name = "cboPotions";
             cboPotions.Size = new Size(121, 23);
             cboPotions.TabIndex = 11;
@@ -162,7 +165,7 @@
             // 
             // btnUsePotion
             // 
-            btnUsePotion.Location = new Point(620, 593);
+            btnUsePotion.Location = new Point(620, 588);
             btnUsePotion.Name = "btnUsePotion";
             btnUsePotion.Size = new Size(75, 23);
             btnUsePotion.TabIndex = 13;
@@ -298,11 +301,42 @@
             craftFireSword.UseVisualStyleBackColor = true;
             craftFireSword.Click += craftFireSword_Click;
             // 
+            // craftLeatherHelmet
+            // 
+            craftLeatherHelmet.Location = new Point(337, 545);
+            craftLeatherHelmet.Name = "craftLeatherHelmet";
+            craftLeatherHelmet.Size = new Size(150, 23);
+            craftLeatherHelmet.TabIndex = 26;
+            craftLeatherHelmet.Text = "CRAFT LEATHER HELMET";
+            craftLeatherHelmet.UseVisualStyleBackColor = true;
+            craftLeatherHelmet.Click += craftLeatherHelmet_Click;
+            // 
+            // cboRecipes
+            // 
+            cboRecipes.FormattingEnabled = true;
+            cboRecipes.Location = new Point(493, 617);
+            cboRecipes.Name = "cboRecipes";
+            cboRecipes.Size = new Size(121, 23);
+            cboRecipes.TabIndex = 27;
+            // 
+            // btnCraftItem
+            // 
+            btnCraftItem.Location = new Point(620, 617);
+            btnCraftItem.Name = "btnCraftItem";
+            btnCraftItem.Size = new Size(75, 23);
+            btnCraftItem.TabIndex = 28;
+            btnCraftItem.Text = "Craft";
+            btnCraftItem.UseVisualStyleBackColor = true;
+            btnCraftItem.Click += btnCraftItem_Click;
+            // 
             // SuperAdventure
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(719, 651);
+            Controls.Add(btnCraftItem);
+            Controls.Add(cboRecipes);
+            Controls.Add(craftLeatherHelmet);
             Controls.Add(craftFireSword);
             Controls.Add(buyBoneSword);
             Controls.Add(lblStone);
@@ -364,5 +398,8 @@
         private Label lblStone;
         private Button buyBoneSword;
         private Button craftFireSword;
+        private Button craftLeatherHelmet;
+        private ComboBox cboRecipes;
+        private Button btnCraftItem;
     }
 }

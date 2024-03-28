@@ -34,11 +34,19 @@ namespace SuperAdventure
             }
             MoveTo(_player.CurrentLocation);
             UpdatePlayerStats();
+            UpdateCraftingListInUI();
+
+
         }
 
         private void cboWeapons_SelectedIndexChanged(object sender, EventArgs e)
         {
             _player.CurrentWeapon = (Weapon)cboWeapons.SelectedItem;
+        }
+
+        private void cboRecipes_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _player.CurrentRecipe = (Recipe)cboRecipes.SelectedItem;
         }
 
         private void UpdatePlayerStats()
@@ -70,6 +78,40 @@ namespace SuperAdventure
             MoveTo(_player.CurrentLocation.LocationToWest);
         }
 
+        private void checkForCraftingRecipes()
+        {
+            // loop through each item in the players inventory
+            foreach (InventoryItem ii in _player.Inventory.ToList())
+            {
+                // check to see if the user has materials in their inventory
+                if (ii.Details.ID == 14)
+                {
+                    // check to see if the user has enough of the materials
+                    if (ii.Quantity >= 5)
+                    {
+                        // remove required materials from the player
+                        ii.Quantity -= 5;
+                        // give the player the crafted item
+                        _player.AddItemToInventory((World.ItemByID(15)));
+
+                        // Refresh player's crafting combobox
+                        UpdateWeaponListInUI();
+
+                        rtbMessages.Text += Environment.NewLine + "You have crafted successfully! " + Environment.NewLine;
+                        ScrollToBottomOfMessages();
+
+
+
+                    }
+                    else
+                    {
+                        rtbMessages.Text += Environment.NewLine + "not enough materials." + Environment.NewLine;
+                        ScrollToBottomOfMessages();
+                    }
+
+                }
+            }
+        }
 
         private void ScrollToBottomOfMessages()
         {
@@ -260,6 +302,46 @@ namespace SuperAdventure
             foreach (PlayerQuest playerQuest in _player.Quests)
             {
                 dgvQuests.Rows.Add(new[] { playerQuest.Details.Name, playerQuest.IsCompleted.ToString() });
+            }
+        }
+
+        private void UpdateCraftingListInUI()
+        {
+            List<Recipe> recipes = new List<Recipe>();
+
+            foreach (InventoryRecipe x in _player.Recipes)
+            {
+                if (x.Details is Recipe)
+                {
+                    if (x.Quantity > 0)
+                    {
+                        recipes.Add((Recipe)x.Details);
+                    }
+                }
+            }
+
+            if (recipes.Count == 0)
+            {
+                // The player doesn't have any weapons, so hide the weapon combobox and "Use" button
+                cboRecipes.Visible = false;
+                btnCraftItem.Visible = false;
+            }
+            else
+            {
+                cboRecipes.SelectedIndexChanged -= cboRecipes_SelectedIndexChanged;
+                cboRecipes.DataSource = recipes;
+                cboRecipes.SelectedIndexChanged += cboRecipes_SelectedIndexChanged;
+                cboRecipes.DisplayMember = "Name";
+                cboRecipes.ValueMember = "ID";
+
+                if (_player.CurrentRecipe != null)
+                {
+                    cboRecipes.SelectedItem = _player.CurrentRecipe;
+                }
+                else
+                {
+                    cboRecipes.SelectedIndex = 0;
+                }
             }
         }
 
@@ -541,9 +623,10 @@ namespace SuperAdventure
                         rtbMessages.Text += Environment.NewLine + "Bone Sword added to inventory! " + Environment.NewLine;
                         ScrollToBottomOfMessages();
 
-                        
 
-                    } else
+
+                    }
+                    else
                     {
                         rtbMessages.Text += Environment.NewLine + "5 bones are required." + Environment.NewLine;
                         ScrollToBottomOfMessages();
@@ -569,7 +652,7 @@ namespace SuperAdventure
                     // check to see if the user has 1 fire rune
                     if (ii.Quantity >= 1)
                     {
-                        
+
                         // give the player a fire sword
                         _player.AddItemToInventory((World.ItemByID(18)));
                         // remove 1 fire rune from the player
@@ -591,10 +674,115 @@ namespace SuperAdventure
 
 
                 }
-                
+
             }
             // update inventory list
             UpdateInventoryListInUI();
+        }
+
+        private void craftLeatherHelmet_Click(object sender, EventArgs e)
+        {
+            rtbMessages.Text += Environment.NewLine + "1 Fire rune is required." + Environment.NewLine;
+            ScrollToBottomOfMessages();
+            // loop through each item in the players inventory
+            foreach (InventoryItem x in _player.Inventory.ToList())
+            {
+                // check to see if the user has a fire rune in their inventory
+                if (x.Details.ID == 16)
+                {
+                    // check to see if the user has 1 fire rune
+                    if (x.Quantity >= 1)
+                    {
+
+                        // give the player a fire sword
+                        _player.AddItemToInventory((World.ItemByID(18)));
+                        // remove 1 fire rune from the player
+                        x.Quantity -= 1;
+
+                        // Refresh player's weapons combobox
+                        UpdateWeaponListInUI();
+
+                        rtbMessages.Text += Environment.NewLine + "Fire Sword added to inventory! " + Environment.NewLine + Environment.NewLine;
+                        ScrollToBottomOfMessages();
+
+
+                    }
+                    else
+                    {
+                        rtbMessages.Text += Environment.NewLine + "1 fire rune is required." + Environment.NewLine;
+                        ScrollToBottomOfMessages();
+                    }
+
+
+                }
+
+            }
+            // update inventory list
+            UpdateInventoryListInUI();
+        }
+
+        private void btnCraftItem_Click(object sender, EventArgs e)
+        {
+
+            // Get selected item from UI
+
+            if (_player.CurrentRecipe != null)
+            {
+                cboRecipes.SelectedItem = _player.CurrentRecipe;
+            }
+            else
+            {
+                cboRecipes.SelectedIndex = 0;
+            }
+
+
+            
+
+            ScrollToBottomOfMessages();
+
+
+            // Loop through player recipes
+            foreach (InventoryRecipe x in _player.Recipes.ToList())
+            {
+                // check to see if player has recipe
+                if (x.Details.Name == cboRecipes.Text)
+                {
+                    // loop throgh players inventory
+                    foreach (InventoryItem ii in _player.Inventory.ToList())
+                    {
+                        // check if player has the required crafting item
+                        if (ii.Details.ID == x.Details.RequiredItemID)
+                        {
+                            
+                            if (ii.Quantity >=  x.Details.RequiredAmount)
+                            {
+
+                                // give the player the item
+                                _player.AddItemToInventory((World.ItemByID(x.Details.CraftedItemID)));
+                                // remove item(s) from the player
+                                ii.Quantity -= x.Details.RequiredAmount;
+
+                                rtbMessages.Text += Environment.NewLine + "You have successfully crafted: " + cboRecipes.Text + Environment.NewLine;
+                                ScrollToBottomOfMessages();
+                                //update UI
+                                UpdateCraftingListInUI();
+                                UpdateWeaponListInUI();
+                                UpdatePotionListInUI();
+                                UpdateInventoryListInUI();
+                            } 
+                            else
+                            {
+                                rtbMessages.Text += Environment.NewLine + "you do not have enough items to make: " + cboRecipes.Text + Environment.NewLine;
+                                ScrollToBottomOfMessages();
+                            }
+                            
+                        } 
+
+                    }
+                }
+
+            }
+
         }
     }
 }

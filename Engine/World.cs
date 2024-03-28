@@ -8,6 +8,7 @@ namespace Engine
 {
     public static class World
     {
+        public static readonly List<Recipe> Recipes = new List<Recipe>();
         public static readonly List<Item> Items = new List<Item>();
         public static readonly List<Monster> Monsters = new List<Monster>();
         public static readonly List<Quest> Quests = new List<Quest>();
@@ -31,6 +32,16 @@ namespace Engine
         public const int ITEM_ID_FIRE_RUNE = 16;
         public const int ITEM_ID_GOBLIN_HEAD = 17;
         public const int ITEM_ID_FIRE_SWORD = 18;
+        // this is the recipe ID (fix later)
+        public const int ITEM_ID_LEATHER_VEST = 19;
+        // This is the item ID
+        public const int ITEM_ID_LEATHER_VEST_ARMOR = 21;
+        public const int ITEM_ID_LEATHER_SCRAP = 20;
+        public const int ITEM_ID_IRON_SCRAPS = 23;
+        public const int ITEM_ID_IRON_SWORD = 24;
+
+        public const int CRAFTING_RECIPE_IRON_SWORD_ID = 22;
+        
 
 
 
@@ -66,6 +77,13 @@ namespace Engine
             PopulateMonsters();
             PopulateQuests();
             PopulateLocations();
+            PopulateRecipes();
+        }
+
+        private static void PopulateRecipes()
+        {
+            Recipes.Add(new Recipe(ITEM_ID_LEATHER_VEST, "Leather Vest", "Leather Vests", 20, 5, ITEM_ID_LEATHER_VEST_ARMOR));
+            Recipes.Add(new Recipe(CRAFTING_RECIPE_IRON_SWORD_ID, "Iron Sword", "Iron Swords", 23, 5, ITEM_ID_IRON_SWORD));
         }
 
         private static void PopulateItems()
@@ -88,6 +106,10 @@ namespace Engine
             Items.Add(new Item(ITEM_ID_FIRE_RUNE, "Fire Rune", "Fire Runes"));
             Items.Add(new Item(ITEM_ID_GOBLIN_HEAD, "Goblin Head", "Goblin Heads"));
             Items.Add(new Weapon(ITEM_ID_FIRE_SWORD, "Fire Sword", "Fire Swords", 50, 100));
+            Items.Add(new Item(ITEM_ID_LEATHER_SCRAP, "Leather Scrap", "Leather Scraps"));
+            Items.Add(new Item(ITEM_ID_LEATHER_VEST_ARMOR, "Leather Armor Vest", "Leather Armor Vests"));
+            Items.Add(new Item(ITEM_ID_IRON_SCRAPS, "Iron Scap", "Iron Scraps"));
+            Items.Add(new Weapon(ITEM_ID_IRON_SWORD, "Iron sword", "Iron swords", 15, 50));
 
 
         }
@@ -96,9 +118,11 @@ namespace Engine
         {
             Monster goblin = new Monster(MONSTER_ID_GOBLIN, "Goblin", 5, 3, 10, 10, 10);
             goblin.LootTable.Add(new LootItem(ItemByID(ITEM_ID_GOBLIN_HEAD), 100, false));
+            goblin.LootTable.Add(new LootItem(ItemByID(ITEM_ID_IRON_SCRAPS), 100, false));
 
             Monster skeleton = new Monster(MONSTER_ID_SKELETON, "Skeleton", 5, 3, 10, 10, 10);
             skeleton.LootTable.Add(new LootItem(ItemByID(ITEM_ID_BONE), 75, false));
+            skeleton.LootTable.Add(new LootItem(ItemByID(ITEM_ID_LEATHER_SCRAP), 100, false));
 
             Monster rat = new Monster(MONSTER_ID_RAT, "Rat", 5, 3, 10, 1000, 1000);
             rat.LootTable.Add(new LootItem(ItemByID(ITEM_ID_RAT_TAIL), 75, false));
@@ -262,6 +286,20 @@ namespace Engine
                 if (item.ID == id)
                 {
                     return item;
+                }
+            }
+
+            return null;
+        }
+
+
+        public static Recipe RecipeByID(int id)
+        {
+            foreach (Recipe recipe in Recipes)
+            {
+                if (recipe.ID == id)
+                {
+                    return recipe;
                 }
             }
 
